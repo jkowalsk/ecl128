@@ -68,6 +68,10 @@ void GFp::sub(Double *res, const Double &a, const Double &b) {
   }
 }
 
+void GFp::sub_nr(Double *res, const Double &a, const Double &b) {
+  FixedSizedInt<2 * NB_LIMBS>::sub(res, a, b);
+}
+
 void GFp::opp(Element *res, const Element &a) {
   FixedSizedInt<NB_LIMBS>::sub(res, p_, a);
 }

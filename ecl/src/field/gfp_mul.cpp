@@ -15,7 +15,7 @@ namespace field {
 
 #ifdef DIGIT_64
 void GFp::mul(Double *res, const Element &a, const Element &b) {
-  ecl_digit c0, c1, c2;
+  register ecl_digit c0, c1, c2;
 
   COMBA_START;
   COMBA_CLEAR
@@ -268,7 +268,9 @@ void GFp::mul(Double *res, const Double &a, const ecl_digit b) {
 }
 
 void GFp::sqr(Element *res, const Element &a) {
-  mul(res, a, a);
+  Double tmp;
+  sqr(&tmp, a) ;
+  reduce(res, tmp);
 }
 
 void GFp::sqr(Double *res, const Element &a) {

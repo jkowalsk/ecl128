@@ -24,9 +24,9 @@ namespace field {
 class Fp6 {
  public:
   /** Field element */
-  typedef typename Fp2::Element Element[3];
+  typedef Fp2::Element Element[3];
   /**  Field double (unreduced result of a multiplication) */
-  typedef typename Fp2::Double Double[3];
+  typedef Fp2::Double Double[3];
 
   /** Constructor.
    * Sets the characteristic of the field
@@ -40,7 +40,7 @@ class Fp6 {
    * @note: there is no primality check on p !
    * @param[in] p characteristic
    */
-  Fp6(const typename GFp::Element &p);
+  Fp6(const GFp::Element &p);
 
   /** Destructor
    */
@@ -96,7 +96,7 @@ class Fp6 {
    * @param[in] a operand 1
    * @param[in] b operand 2
    */
-  void add(Element *res, const Element &a, const typename GFp::Element &b);
+  void add(Element *res, const Element &a, const GFp::Element &b);
 
   /** Performs res = a + b.
    * @param[out] res result
@@ -177,7 +177,7 @@ class Fp6 {
    * @param[in] a operand 1
    * @param[in] b operand 2
    */
-  void mul(Element *res, const Element &a, const typename Fp2::Element &b);
+  void mul(Element *res, const Element &a, const Fp2::Element &b);
 
   /** Performs res = a * b.
    * @param[out] res result
@@ -191,7 +191,7 @@ class Fp6 {
    * @param[in] a operand 1
    * @param[in] b operand 2
    */
-  void mul(Element *res, const Element &a, const typename GFp::Element &b);
+  void mul(Element *res, const Element &a, const GFp::Element &b);
 
   /** Performs res = a^2.
    * @param[out] res result
@@ -223,7 +223,7 @@ class Fp6 {
    * @param[in] a operand 1
    * @param[in] e operand 2
    */
-  void exp(Element *res, const Element &a, const typename GFp::Element &e);
+  void exp(Element *res, const Element &a, const GFp::Element &e);
 
   /** Performs res = a^(p^i) where p is the field characteristic.
    * @param[out] res result
@@ -247,8 +247,8 @@ class Fp6 {
    * @param[in] a1 Fp2 element
    * @param[in] a2 Fp2 element
    */
-  void init(Element *res, const typename Fp2::Element &a0,
-            const typename Fp2::Element &a1, const typename Fp2::Element &a2);
+  void init(Element *res, const Fp2::Element &a0,
+            const Fp2::Element &a1, const Fp2::Element &a2);
 
   /** Compares a and b
    * @param[in] a Fp2 Element
@@ -264,7 +264,7 @@ class Fp6 {
    * @return  1 if a != b
    * @return  0 if a == b
    */
-  int cmp(const Element &a, const typename GFp::Element &b);
+  int cmp(const Element &a, const GFp::Element &b);
 
   /** Compares a and b
    * @param[in] a Fp2 Double
@@ -311,7 +311,7 @@ class Fp6 {
   /** Get the characteristic of the field field.
    * @param[out] a field characteristic
    */
-  void get_characteristic(typename GFp::Element *a) {
+  void get_characteristic(GFp::Element *a) {
     gfp->get_characteristic(a);
   }
   ;

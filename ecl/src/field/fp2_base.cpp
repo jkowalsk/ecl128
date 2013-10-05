@@ -22,7 +22,7 @@ Fp2::Fp2(string p) {
   init_xsi();
 }
 
-Fp2::Fp2(const typename GFp::Element &p) {
+Fp2::Fp2(const GFp::Element &p) {
   gfp = new GFp(p);
   init_qnr();
   init_xsi();
@@ -33,7 +33,7 @@ Fp2::~Fp2() {
 }
 
 void Fp2::init_qnr() {
-  typename GFp::Element a;
+  GFp::Element a;
   ecl_digit tested = 0;
   // get quadratic non residue from GFp
   do {
@@ -44,7 +44,7 @@ void Fp2::init_qnr() {
 }
 
 void Fp2::init_xsi() {
-  typename GFp::Element candidate;
+  GFp::Element candidate;
 
   // c = a²+gfp_qnr_.b² nor square nor cube in gfp
   // severall tries :
@@ -146,7 +146,7 @@ void Fp2::add(Element *res, const Element &a, const Element &b) {
   gfp->add(&((*res)[1]), a[1], b[1]);
 }
 
-void Fp2::add(Element *res, const Element &a, const typename GFp::Element &b) {
+void Fp2::add(Element *res, const Element &a, const GFp::Element &b) {
   gfp->add(&((*res)[0]), a[0], b);
 }
 
@@ -188,7 +188,7 @@ int Fp2::cmp(const Element &a, const Element &b) {
   return gfp->cmp(a[0], b[0]) | gfp->cmp(a[1], b[1]);
 }
 
-int Fp2::cmp(const Element &a, const typename GFp::Element &b) {
+int Fp2::cmp(const Element &a, const GFp::Element &b) {
   return gfp->cmp(a[0], b) | gfp->cmp(a[1], 0);
 }
 
@@ -201,8 +201,8 @@ void Fp2::conj(Element *res, const Element &a) {
   gfp->opp(&((*res)[1]), a[1]);
 }
 
-void Fp2::init(Element *res, const typename GFp::Element &a0,
-               const typename GFp::Element &a1) {
+void Fp2::init(Element *res, const GFp::Element &a0,
+               const GFp::Element &a1) {
   ((*res)[0]).copy(a0);
   ((*res)[1]).copy(a1);
 }

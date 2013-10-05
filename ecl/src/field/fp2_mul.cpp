@@ -22,14 +22,14 @@ void Fp2::mul(Element (*res), const Element &a, const ecl_digit b) {
 }
 
 void Fp2::mul(Element (*res), const Element &a,
-              const typename GFp::Element &b) {
+              const GFp::Element &b) {
   gfp->mul(&((*res)[0]), a[0], b);
   gfp->mul(&((*res)[1]), a[1], b);
 }
 
 void Fp2::mul(Double (*res), const Element &a, const Element &b) {
-  typename GFp::Double t0, t1;
-  typename GFp::Element t2, t3;
+  GFp::Double t0, t1;
+  GFp::Element t2, t3;
 
   gfp->mul(&t0, a[0], b[0]);
   gfp->mul(&t1, a[1], b[1]);
@@ -56,23 +56,42 @@ void Fp2::sqr(Element (*res), const Element &a) {
   reduce(res, d);
 }
 
+#if 1
 void Fp2::sqr(Double (*res), const Element &a) {
   if (gfp_qnr_ == 1) {  // one mul instead of 2 squares
-    typename GFp::Element t0, t1;
+    GFp::Element t0, t1;
     gfp->add(&t0, a[0], a[1]);
     gfp->sub(&t1, a[0], a[1]);
     gfp->mul(&((*res)[0]), t0, t1);
   } else {
-    typename GFp::Double t0, t1;
-    gfp->sqr(&t0, a[0]);
-    gfp->sqr(&t1, a[1]);
-    gfp->mul(&t1, t1, gfp_qnr_);
-    gfp->sub(&((*res)[0]), t0, t1);
+    gfp->sqr(&((*res)[0]), a[0]);
+    gfp->sqr(&((*res)[1]), a[1]);
+    gfp->mul(&((*res)[1]), ((*res)[1]), gfp_qnr_);
+    gfp->sub(&((*res)[0]), ((*res)[0]), ((*res)[1]));
   }
   gfp->mul(&((*res)[1]), a[0], a[1]);
   gfp->add(&((*res)[1]), (*res)[1], (*res)[1]);
 }
+#else
+//1. t ← addNC(a1, a1);
+//2. d1 ← mul256(t, a0);
+//3. t ← addNC(a0, p);
+//4. t ← subNC(t, a1);
+//5. c1 ← 5a1;
+//6. c1 ← addNC(c1, a0);
+//7. d0 ← mul256(t, c1);
+//8. c1 ← mod512(d1);
+//9. d1 ← addNC(d1, d1);
+//10. d0 ← subNC(d0, d1);
+//11. c0 ← mod512(d0);
+//12. return C ← c0 +c1u;
+void Fp2::sqr(Double (*res), const Element &a) {
+  GFp::Element t, c0, c1;
+  gfp->add_nr(&t, a[1], a[1]) ;
+  gfp->mul(&((*res)[1]), t, a[0]) ;
 
+}
+#endif
 /*
  Require: A = a0 + a1u in Fp2 .
  Ensure: res = C = c0 + c1u = A^-1 in Fp2 .
@@ -86,7 +105,7 @@ void Fp2::sqr(Double (*res), const Element &a) {
  */
 
 void Fp2::inv(Element (*res), const Element &a) {
-  typename GFp::Element t1, t0;
+  GFp::Element t1, t0;
 
   gfp->sqr(&t0, a[0]);
   gfp->sqr(&t1, a[1]);
@@ -107,7 +126,7 @@ void Fp2::div(Element (*res), const Element &a, const Element &b) {
 }
 
 void Fp2::exp(Element (*res), const Element &a,
-              const typename GFp::Element &e) {
+              const GFp::Element &e) {
   Element R;
   int i, l;
 
@@ -141,7 +160,7 @@ ErrCode Fp2::frobenius(Element (*res), const Element &a, int i) {
 }
 
 void Fp2::mul_xsi(Element (*res), const Element &a) {
-  typename GFp::Element t0, t1;
+  GFp::Element t0, t1;
   switch (xsi_) {
     case THREE_ONE:   // xsi = 3 + i
       gfp->mul(&t0, a[0], 3);
@@ -179,7 +198,7 @@ void Fp2::mul_xsi(Element (*res), const Element &a) {
 }
 
 void Fp2::mul_xsi(Double (*res), const Double &a) {
-  typename GFp::Double t0, t1;
+  GFp::Double t0, t1;
   switch (xsi_) {
     case TWO_ONE:   // xsi = 2 + i ; qnr = 1
       gfp->add(&t0, a[0], a[0]);
@@ -208,7 +227,7 @@ void Fp2::mul_xsi(Double (*res), const Double &a) {
 }
 
 int Fp2::legendre(const Element &a) {
-  typename GFp::Element l, r;
+  GFp::Element l, r;
 
   gfp->sqr(&l, a[0]);
   gfp->sqr(&r, a[1]);
@@ -219,7 +238,7 @@ int Fp2::legendre(const Element &a) {
 
 // based on formula from "implementing Cryptographic Pairings" by Michael Scott
 ErrCode Fp2::sqrt(Element (*res), const Element &a) {
-  typename GFp::Element tmp, l, r, norm;
+  GFp::Element tmp, l, r, norm;
 
   if (legendre(a) == -1) {
     return ERR_NOT_SQUARE;

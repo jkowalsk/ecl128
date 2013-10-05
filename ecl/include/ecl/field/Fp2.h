@@ -36,9 +36,9 @@ class Fp2 {
  public:
 
   /** Field element */
-  typedef typename GFp::Element Element[2];
+  typedef GFp::Element Element[2];
   /**  Field double (unreduced result of a multiplication) */
-  typedef typename GFp::Double Double[2];
+  typedef GFp::Double Double[2];
 
   /** Constructor.
    * Sets the characteristic of the field
@@ -52,7 +52,7 @@ class Fp2 {
    * @note: there is no primality check on p !
    * @param[in] p characteristic
    */
-  Fp2(const typename GFp::Element &p);
+  Fp2(const GFp::Element &p);
 
   /** Destructor
    */
@@ -108,7 +108,7 @@ class Fp2 {
    * @param[in] a operand 1
    * @param[in] b operand 2
    */
-  void add(Element *res, const Element &a, const typename GFp::Element &b);
+  void add(Element *res, const Element &a, const GFp::Element &b);
 
   /** Performs res = a + b.
    * @param[out] res result
@@ -196,7 +196,7 @@ class Fp2 {
    * @param[in] a operand 1
    * @param[in] b operand 2
    */
-  void mul(Element *res, const Element &a, const typename GFp::Element &b);
+  void mul(Element *res, const Element &a, const GFp::Element &b);
 
   /** Performs res = a^2.
    * @param[out] res result
@@ -228,7 +228,7 @@ class Fp2 {
    * @param[in] a operand 1
    * @param[in] e operand 2
    */
-  void exp(Element *res, const Element &a, const typename GFp::Element &e);
+  void exp(Element *res, const Element &a, const GFp::Element &e);
 
   /** Performs res = a^(p^i) where p is the field characteristic.
    * @param[out] res result
@@ -250,8 +250,8 @@ class Fp2 {
    * @param[in] a0 field element
    * @param[in] a1 field element
    */
-  void init(Element *res, const typename GFp::Element &a0,
-            const typename GFp::Element &a1);
+  void init(Element *res, const GFp::Element &a0,
+            const GFp::Element &a1);
 
   /** Compares a and b
    * @param[in] a Fp2 Element
@@ -267,7 +267,7 @@ class Fp2 {
    * @return  1 if a != b
    * @return  0 if a == b
    */
-  int cmp(const Element &a, const typename GFp::Element &b);
+  int cmp(const Element &a, const GFp::Element &b);
 
   /** Compares a and b
    * @param[in] a Fp2 Double
@@ -329,7 +329,7 @@ class Fp2 {
   /** Get the characteristic of the field field.
    * @param[out] a field characteristic
    */
-  void get_characteristic(typename GFp::Element *a) {
+  void get_characteristic(GFp::Element *a) {
     gfp->get_characteristic(a);
   }
 

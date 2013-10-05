@@ -157,6 +157,14 @@ class GFp {
    */
   void sub(Double *res, const Double &a, const Double &b);
 
+  /** Performs res = a - b without reduction.
+   * @note: result may be negative... use with caution.
+   * @param[out] res result
+   * @param[in] a operand 1
+   * @param[in] b operand 2
+   */
+  void sub_nr(Double *res, const Double &a, const Double &b);
+
   /** Compute opposite of a
    * @param[out] res result = -a
    * @param[in] a operand
