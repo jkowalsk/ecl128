@@ -31,7 +31,7 @@ namespace curve {
  */
 enum CurveDefinition {
   NIST_P256,  //!< NIST P256 curve
-  ANSSI_FRP256v1  //!< ANSSI FRP256v1 curve: <a href="http://www.legifrance.gouv.fr/affichTexte.do;jsessionid=?cidTexte=JORFTEXT000024668816&dateTexte=&oldAction=rechJO&categorieLien=id">Publication in JO</a>
+  ANSSI_FRP256v1  //!< ANSSI FRP256v1 curve \cite jo:FRP256v1 as french standard curve
 };
 
 

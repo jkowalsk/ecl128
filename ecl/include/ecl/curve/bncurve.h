@@ -30,9 +30,9 @@ namespace curve {
 /** Enumerates defined BN curves.
  */
 enum BnCurveDefinition {
-  BN_BEUCHAT_254,
-  BN_ARANHA_254,
-  BN_NAERING_256,
+  BN_BEUCHAT_254, //!< parameters from \cite cryptoeprint:2010:354
+  BN_ARANHA_254,  //!< parameters from \cite cryptoeprint:2010:526
+  BN_NAERING_256, //!< parameters from \cite cryptoeprint:2010:186
 };
 
 /** Defines BN curve.
