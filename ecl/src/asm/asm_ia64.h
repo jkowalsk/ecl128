@@ -12,6 +12,21 @@
 
 #include "ecl/config.h"
 
+static inline uint32_t ROT32L(uint32_t word, int i) {
+  __asm__ ("roll %%cl,%0"
+      :"=r" (word)
+       :"0" (word),"c" (i));
+  return word;
+}
+
+static inline uint32_t ROT32R(uint32_t word, int i) {
+  __asm__ ("rorl %%cl,%0"
+      :"=r" (word)
+       :"0" (word),"c" (i));
+  return word;
+}
+
+
 #define ADD(res, a, b) \
 __asm__ __volatile__ (                               \
 "movq  %1,%%rax     \n\t"                            \

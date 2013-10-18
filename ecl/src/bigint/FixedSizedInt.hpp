@@ -22,17 +22,17 @@ namespace ecl {
 
 template<int nb_limbs>
 FixedSizedInt<nb_limbs>::FixedSizedInt() {
-  this->zero();
+  ZEROMEM(this->val, nb_limbs_ * sizeof(ecl_digit));
 }
 
 template<int nb_limbs>
 FixedSizedInt<nb_limbs>::~FixedSizedInt() {
-  this->zero();
+  ZEROMEM(this->val, nb_limbs_ * sizeof(ecl_digit));
 }
 
 template<int nb_limbs>
 void FixedSizedInt<nb_limbs>::zero() {
-  memset(this->val, 0, nb_limbs_ * sizeof(ecl_digit));
+  ZEROMEM(this->val, nb_limbs_ * sizeof(ecl_digit));
 }
 
 template<int nb_limbs>

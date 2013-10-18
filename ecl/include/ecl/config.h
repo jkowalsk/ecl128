@@ -3,11 +3,10 @@
 
 #include <stdint.h>
 
-#if defined(_WIN64) || defined(_WIN32)
+#if defined(MSVC)
 #include <Windows.h>
-#define DLL_EXPORT //__declspec(dllexport)
 #else
-#define DLL_EXPORT
+#include <cstring>
 #endif
 
 // First detect current architecture
@@ -52,4 +51,10 @@ typedef uint64_t ecl_word;
 
 #define DIGIT_BYTES ((DIGIT_BITS+7)/8)
 
+/* Securezeromemory macro */
+#ifdef MSVC
+#define ZEROMEM(ptr, size) SecureZeroMemory(ptr, size);
+#else
+#define ZEROMEM(ptr, size) std::memset(ptr, 0, size);
+#endif
 #endif // ECL_CONFIG_H

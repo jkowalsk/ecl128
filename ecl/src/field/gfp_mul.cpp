@@ -190,7 +190,7 @@ void GFp::mul(Double *res, const Element &a, const Element &b) {
   COMBA_STORE2(res->val[15]);
 
   COMBA_FINI;
-  memset(at, 0, 16 * sizeof(ecl_digit));
+  ZEROMEM(at, 16 * sizeof(ecl_digit));
 }
 #endif
 

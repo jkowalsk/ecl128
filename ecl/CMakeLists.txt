@@ -10,6 +10,14 @@ set(CMAKE_CXX_FLAGS_DEBUG
   "${CMAKE_CXX_FLAGS_DEBUG} -DFORCE_NO_ASM"
   )
   
+
+set(UTILS_INCLUDE
+#    include/ecl/utils/Buffer.h
+    )
+
+set(UTILS_FILES
+#    src/utils/Buffer.cpp
+    )
   
 set( BN_INCLUDE
     include/ecl/bigint/FixedSizedInt.h
@@ -57,18 +65,32 @@ set( CURVE_FILES
     src/curve/bnpairing.cpp
 )
 
+set(DIGEST_INCLUDE
+    include/ecl/digest/sha256.h
+)
+
+set(DIGEST_FILES
+    src/digest/sha256.cpp
+)
+
+
 set( SRC_FILES
+    ${UTILS_FILES}
     ${BN_FILES}
     ${FP_FILES}
     ${CURVE_FILES}
+    ${DIGEST_FILES}
 )
 
 set( INCLUDE_FILES
     include/ecl/config.h
     include/ecl/errcode.h
+    include/ecl/types.h
+    ${UTILS_INCLUDE}
     ${BN_INCLUDE}
     ${FP_INCLUDE}
     ${CURVE_INCLUDE}
+    ${DIGEST_INCLUDE}
 )
 
 include_directories(

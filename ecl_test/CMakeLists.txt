@@ -26,6 +26,9 @@ set( COMMON_TEST_FILES
   src/Tools/rand.cpp
 )
 
+set( UTIL_TEST_FILES
+    src/utils/buffer_test.cpp
+  )
 
 set( FP_TEST_FILES
   )
@@ -40,6 +43,9 @@ set( CURVE_TEST_FILES
     src/curve/bnpairing_test.cpp 
   )
 
+set( DIGEST_TEST_FILES
+    src/digest/sha256_test.cpp
+  )
 
 set( GTEST_SRC_FILES
     src/gtest-all.cpp
@@ -47,8 +53,10 @@ set( GTEST_SRC_FILES
 
 set( SRC_FILES
    ${COMMON_TEST_FILES}
+   ${UTIL_TEST_FILES}
    ${FIELD_TEST_FILES}
    ${CURVE_TEST_FILES}   
+   ${DIGEST_TEST_FILES}   
    ${GTEST_SRC_FILES}
 )
 

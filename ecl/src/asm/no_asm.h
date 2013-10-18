@@ -1,5 +1,11 @@
 #include "ecl/config.h"
 
+
+#define ROT32L(x, n) ( (((uint32_t)(x)<<(uint32_t)((n)&31)) | (((uint32_t)(x)&0xFFFFFFFFUL)>>(uint32_t)(32-((n)&31)))) & 0xFFFFFFFFUL)
+#define ROT32R(x, n) ( ((((uint32_t)(x)&0xFFFFFFFFUL)>>(uint32_t)((n)&31)) | ((uint32_t)(x)<<(uint32_t)(32-((n)&31)))) & 0xFFFFFFFFUL)
+
+
+
 #define ADD(res, a, b) \
 	do { \
 		ecl_word t;   \
