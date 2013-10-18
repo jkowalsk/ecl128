@@ -4,13 +4,13 @@
  */
 
 #include "ecl/field/GFp.h"
-// #include "ecl/private/gfp/GFpElement-impl.h"
 #include "../asm/arch.h"
 
 using ecl::ErrCode;
 
 namespace ecl {
 namespace field {
+
 
 void GFp::add(Element *res, const Element &a, const Element &b) {
   register unsigned char carry = 0;

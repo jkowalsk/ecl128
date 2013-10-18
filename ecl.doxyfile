@@ -179,7 +179,7 @@ QT_AUTOBRIEF           = NO
 # The new default is to treat a multi-line C++ comment block as a detailed 
 # description. Set this tag to YES if you prefer the old behaviour instead.
 
-MULTILINE_CPP_IS_BRIEF = NO
+MULTILINE_CPP_IS_BRIEF = YES
 
 # If the INHERIT_DOCS tag is set to YES (the default) then an undocumented 
 # member inherits the documentation from any documented member that it 
@@ -276,7 +276,7 @@ AUTOLINK_SUPPORT       = YES
 # func(std::string) {}). This also makes the inheritance and collaboration 
 # diagrams that involve STL classes more complete and accurate.
 
-BUILTIN_STL_SUPPORT    = NO
+BUILTIN_STL_SUPPORT    = YES
 
 # If you use Microsoft's C++/CLI language, you should set this option to YES to 
 # enable parsing support.
@@ -318,7 +318,7 @@ SUBGROUPING            = YES
 # @ingroup) instead of on a separate page (for HTML and Man pages) or 
 # section (for LaTeX and RTF).
 
-INLINE_GROUPED_CLASSES = NO
+INLINE_GROUPED_CLASSES = YES
 
 # When the INLINE_SIMPLE_STRUCTS tag is set to YES, structs, classes, and 
 # unions with only public data fields or simple typedef fields will be shown 
@@ -327,7 +327,7 @@ INLINE_GROUPED_CLASSES = NO
 # to NO (the default), structs, classes, and unions are shown on a separate 
 # page (for HTML and Man pages) or section (for LaTeX and RTF).
 
-INLINE_SIMPLE_STRUCTS  = NO
+INLINE_SIMPLE_STRUCTS  = YES
 
 # When TYPEDEF_HIDES_STRUCT is enabled, a typedef of a struct, union, or enum 
 # is documented as struct, union, or enum with the name of the typedef. So 
@@ -844,13 +844,13 @@ STRIP_CODE_COMMENTS    = YES
 # then for each documented function all documented 
 # functions referencing it will be listed.
 
-REFERENCED_BY_RELATION = NO
+REFERENCED_BY_RELATION = YES
 
 # If the REFERENCES_RELATION tag is set to YES 
 # then for each documented function all documented entities 
 # called/used by that function will be listed.
 
-REFERENCES_RELATION    = NO
+REFERENCES_RELATION    = YES
 
 # If the REFERENCES_LINK_SOURCE tag is set to YES (the default) 
 # and SOURCE_BROWSER tag is set to YES, then the hyperlinks from 
@@ -1195,7 +1195,7 @@ DISABLE_INDEX          = NO
 # Since the tree basically has the same information as the tab index you 
 # could consider to set DISABLE_INDEX to NO when enabling this option.
 
-GENERATE_TREEVIEW      = NO
+GENERATE_TREEVIEW      = YES
 
 # The ENUM_VALUES_PER_LINE tag can be used to set the number of enum values 
 # (range [0,1..20]) that doxygen will group on one line in the generated HTML 
@@ -1276,7 +1276,7 @@ MATHJAX_CODEFILE       =
 # typically be disabled. For large projects the javascript based search engine 
 # can be slow, then enabling SERVER_BASED_SEARCH may provide a better solution.
 
-SEARCHENGINE           = NO
+SEARCHENGINE           = YES
 
 # When the SERVER_BASED_SEARCH tag is enabled the search engine will be 
 # implemented using a web server instead of a web client using Javascript. 

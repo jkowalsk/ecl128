@@ -58,6 +58,15 @@ class CipherText {
   virtual ~CipherText() = 0;
 };
 
+/** Abstract class for IBE parameters.
+ */
+class Param {
+ public:
+  Param() {
+  }
+  virtual ~Param() = 0;
+};
+
 /** Abstract class for IBE private keys
  */
 class PrivateKey {

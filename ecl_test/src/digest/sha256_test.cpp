@@ -73,15 +73,22 @@ TEST(Digest, Sha256_2) {
   Sha256 md;
   FixedSizedBuffer<32> test_vector;
   FixedSizedBuffer<32> result;
+  sstring str = "";
 
   md.init();
   for( int i=0; i<1000000; i++) {
     md.update( "a" );
+    str.append("a") ;
   }
   md.final(&result);
   test_vector = a1000000_vector;
   bool eq = (test_vector == result) ;
   ASSERT_TRUE( eq ) ;
+
+  md.hash(&result, str) ;
+  eq = (test_vector == result) ;
+  ASSERT_TRUE( eq ) ;
+
 }
 
 } //namespace ecl
