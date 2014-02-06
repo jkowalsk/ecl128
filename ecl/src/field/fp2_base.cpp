@@ -34,13 +34,13 @@ Fp2::~Fp2() {
 
 void Fp2::init_qnr() {
   GFp::Element a;
-  ecl_digit tested = 0;
+  int tested = 0;
   // get quadratic non residue from GFp
   do {
     tested++;
     gfp->set(&a, -tested);
   } while (!gfp->isQNR(a));
-  gfp_qnr_ = tested;
+  gfp_qnr_ = (ecl_digit)tested;
 }
 
 void Fp2::init_xsi() {

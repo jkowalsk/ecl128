@@ -111,7 +111,7 @@ void BnCurve<Basefield>::set_trace() {
 }
 
 ErrCode GFpBnCurve::initialize(string t, string b) {
-  typename GFp::Element tmp;
+  GFp::Element tmp;
   ErrCode rv = ERR_OK;
 
   rv = this->t_.fromString(&this->t_sign_, t);
@@ -180,8 +180,8 @@ ErrCode Fp2BnCurve::initialize(string t, string b) {
 }
 
 void Fp2BnCurve::calc_frb_cst() {
-  typename GFp::Element e, z, one, six;
-  typename Fp2::Element t0, t1;
+  GFp::Element e, z, one, six;
+  Fp2::Element t0, t1;
 
   this->gfp_->one(&one);
 
@@ -341,11 +341,11 @@ ErrCode Fp2BnCurve::frobenius(Point *res, const Point &P, int i) {
 }
 
 template<class Basefield>
-void BnCurve<Basefield>::get_trace(typename GFp::Element *trace) {
+void BnCurve<Basefield>::get_trace(GFp::Element *trace) {
   gfp_->copy(trace, trace_);
 }
 
-ErrCode GFpBnCurve::compress(typename GFp::Element *x, int *y, const Point &P) {
+ErrCode GFpBnCurve::compress(GFp::Element *x, int *y, const Point &P) {
   Point tmp;
 
   this->init(&tmp);
@@ -359,10 +359,10 @@ ErrCode GFpBnCurve::compress(typename GFp::Element *x, int *y, const Point &P) {
   return ERR_OK;
 }
 
-ErrCode GFpBnCurve::decompress(Point *P, const typename GFp::Element &x,
+ErrCode GFpBnCurve::decompress(Point *P, const GFp::Element &x,
                                int y) {
   ErrCode rv;
-  typename GFp::Element t1;
+  GFp::Element t1;
 
   // z = 1
   this->field_->one(&(P->z));
@@ -383,9 +383,9 @@ ErrCode GFpBnCurve::decompress(Point *P, const typename GFp::Element &x,
 }
 
 ErrCode BnCurveFactory::getParameters(GFpBnCurve *gfp_curve,
-                                      typename GFpBnCurve::Point *gfp_generator,
+                                      GFpBnCurve::Point *gfp_generator,
                                       Fp2BnCurve *fp2_curve,
-                                      typename Fp2BnCurve::Point *fp2_generator,
+                                      Fp2BnCurve::Point *fp2_generator,
                                       BnCurveDefinition curve_def) {
   ErrCode rv = ERR_OK;
   unsigned char buff[32];

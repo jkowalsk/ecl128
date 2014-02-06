@@ -170,7 +170,7 @@ int FixedSizedInt<nb_limbs>::get_bit(int i) const {
 }
 
 template<int nb_limbs>
-void FixedSizedInt<nb_limbs>::get_wNAF(int wNaf[nb_limbs], int *wNaf_sz,
+void FixedSizedInt<nb_limbs>::get_wNAF(int *wNaf, int *wNaf_sz,
                                        int w) {
   int s, i = 0;
   FixedSizedInt<nb_limbs> nn;

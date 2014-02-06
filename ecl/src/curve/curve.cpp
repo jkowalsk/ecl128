@@ -423,7 +423,7 @@ void FpnCurve<BaseField>::get_order(typename GFp::Element *order) {
 
 ErrCode GFpCurve::initialize(const string &prime, const string &order,
                              const string &a, const string &b) {
-  typename GFp::Element t;
+  GFp::Element t;
   int sign;
 
   this->field_ = new GFp(prime);
@@ -446,7 +446,7 @@ ErrCode GFpCurve::initialize(const string &prime, const string &order,
   return ERR_OK;
 }
 
-ErrCode GFpCurve::compress(typename GFp::Element *x, int *y, const Point &P) {
+ErrCode GFpCurve::compress(GFp::Element *x, int *y, const Point &P) {
   Point tmp;
 
   this->init(&tmp);
@@ -460,9 +460,9 @@ ErrCode GFpCurve::compress(typename GFp::Element *x, int *y, const Point &P) {
   return ERR_OK;
 }
 
-ErrCode GFpCurve::decompress(Point *P, const typename GFp::Element &x, int y) {
+ErrCode GFpCurve::decompress(Point *P, const GFp::Element &x, int y) {
   ErrCode rv;
-  typename GFp::Element t1;
+  GFp::Element t1;
 
   // z = 1
   this->field_->one(&(P->z));

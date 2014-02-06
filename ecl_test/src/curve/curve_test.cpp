@@ -79,7 +79,7 @@ class EccGFpBase : public testing::Test {
     gfp->zero(res);
     get_digit(&d, str[0]);
     gfp->add_nr(res, *res, d);
-    for (int i = 1; i < strlen(str); i++) {
+    for (size_t i = 1; i < strlen(str); i++) {
       get_digit(&d, str[i]);
       gfp->mul(res, *res, 10);
       gfp->add_nr(res, *res, d);
@@ -168,7 +168,6 @@ ASSERT_EQ(0, this->curve.cmp(this->ref, this->tP) );
  */
 TYPED_TEST_P( EccGFp, Mul ){
 int vector_size = this->getNbTest(this->def_size);
-int sign;
 ASSERT_TRUE( this->curve.isValid(this->P, CHECK_ORDER) );
 ASSERT_TRUE( this->gfp != NULL );
 
@@ -195,7 +194,7 @@ for(int j=0; j<vector_size; j++) {
 /** Test point compression and decompression */
 TYPED_TEST_P(EccGFp, Compression){
 int vector_size = this->getNbTest(this->def_size);
-int comp_y, sign;
+int comp_y;
 
 ASSERT_TRUE( this->curve.isValid(this->P, CHECK_ORDER) );
 ASSERT_TRUE( this->gfp != NULL );
@@ -229,7 +228,6 @@ for(int j=0; j<vector_size; j++) {
  */
 TYPED_TEST_P(EccGFp, Ladder){
 int vector_size = this->getNbTest(this->def_size);
-int sign;
 
 ASSERT_TRUE( this->curve.isValid(this->P, CHECK_ORDER) );
 ASSERT_TRUE( this->gfp != NULL );

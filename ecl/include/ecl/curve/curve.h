@@ -257,7 +257,7 @@ class FpnCurve {
 class GFpCurve : public FpnCurve<GFp> {
  public:
   /** Curve point definition */
-  typedef typename FpnCurve<GFp>::Point Point;
+  typedef FpnCurve<GFp>::Point Point;
 
   GFpCurve()
       : FpnCurve<GFp>() {
@@ -284,7 +284,7 @@ class GFpCurve : public FpnCurve<GFp> {
    @return ERR_SUCCESS if success
    @return an error code otherwise
    */
-  ErrCode compress(typename GFp::Element *x, int *y, const Point &P);
+  ErrCode compress(GFp::Element *x, int *y, const Point &P);
 
   /** Imports a point from its compressed form.
    @param[out] P decompressed point
@@ -294,7 +294,7 @@ class GFpCurve : public FpnCurve<GFp> {
    @return ERR_SUCCESS if success
    @return an error code otherwise
    */
-  ErrCode decompress(Point *P, const typename GFp::Element &x, int y);
+  ErrCode decompress(Point *P, const GFp::Element &x, int y);
 
 };
 
@@ -304,7 +304,7 @@ class GFpCurve : public FpnCurve<GFp> {
 class Fp2Curve : public FpnCurve<Fp2> {
  public:
   /** Curve point definition */
-  typedef typename FpnCurve<Fp2>::Point Point;
+  typedef FpnCurve<Fp2>::Point Point;
 
   Fp2Curve()
       : FpnCurve<Fp2>() {

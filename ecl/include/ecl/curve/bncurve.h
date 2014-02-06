@@ -98,8 +98,6 @@ class BnCurve : public FpnCurve<BaseField> {
   void set_order();
   /** Sets the trace of the curve */
   void set_trace();
-  /** Sets b in the weierstrass equation */
-  void set_b(string b);
 
   int t_sign_; //!< sign of t
   GFp::Element t_;     //!< number t used to generate other parameters
@@ -203,9 +201,9 @@ class BnCurveFactory {
    * @return ERR_INVALID_VALUE otherwise. Check that the definition is consistent with bitsize template parameter !
    */
   static ErrCode getParameters(GFpBnCurve *gfp_curve,
-                               typename GFpBnCurve::Point *gfp_generator,
+                               GFpBnCurve::Point *gfp_generator,
                                Fp2BnCurve *fp2_curve,
-                               typename Fp2BnCurve::Point *fp2_generator,
+                               Fp2BnCurve::Point *fp2_generator,
                                BnCurveDefinition curve_def);
 
 };
