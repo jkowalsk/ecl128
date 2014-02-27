@@ -1,9 +1,9 @@
 cmake_minimum_required (VERSION 2.8)
+project (ecl_test)
 
 # include custom cmake definition
 include("../cmake/common.cmake")
 
-project (ecl_test)
 set(EXE_NAME ecl_test)
 
 #### compilation flags

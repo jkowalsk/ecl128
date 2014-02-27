@@ -41,7 +41,6 @@ void Fp6::mul(Element *res, const Element &a, const ecl_digit b) {
 
 void Fp6::mul(Double *res, const Element &a, const Element &b) {
   Fp2::Double t0, t1, t2;
-  Fp2::Double c0, c1, c2;
   Fp2::Element s0, s1;
 
   fp2->mul(&t0, a[0], b[0]);
@@ -50,26 +49,26 @@ void Fp6::mul(Double *res, const Element &a, const Element &b) {
 
   fp2->add(&s0, a[1], a[2]);
   fp2->add(&s1, b[1], b[2]);
-  fp2->mul(&c0, s0, s1);
-  fp2->sub(&c0, c0, t1);
-  fp2->sub(&c0, c0, t2);
-  fp2->mul_xsi(&c0, c0);
-  fp2->add(&((*res)[0]), c0, t0);
+  fp2->mul(&((*res)[0]), s0, s1);
+  fp2->sub(&((*res)[0]), (*res)[0], t1);
+  fp2->sub(&((*res)[0]), (*res)[0], t2);
+  fp2->mul_xsi(&((*res)[0]), (*res)[0]);
+  fp2->add(&((*res)[0]), (*res)[0], t0);
 
   fp2->add(&s0, a[1], a[0]);
   fp2->add(&s1, b[1], b[0]);
-  fp2->mul(&c1, s0, s1);
-  fp2->sub(&c1, c1, t0);
-  fp2->sub(&c1, c1, t1);
-  fp2->mul_xsi(&c2, t2);
-  fp2->add(&((*res)[1]), c1, c2);
+  fp2->mul(&((*res)[1]), s0, s1);
+  fp2->sub(&((*res)[1]), (*res)[1], t0);
+  fp2->sub(&((*res)[1]), (*res)[1], t1);
+  fp2->mul_xsi(&((*res)[2]), t2);
+  fp2->add(&((*res)[1]), (*res)[1], (*res)[2]);
 
   fp2->add(&s0, a[0], a[2]);
   fp2->add(&s1, b[0], b[2]);
-  fp2->mul(&c2, s0, s1);
-  fp2->sub(&c2, c2, t0);
-  fp2->sub(&c2, c2, t2);
-  fp2->add(&((*res)[2]), c2, t1);
+  fp2->mul(&((*res)[2]), s0, s1);
+  fp2->sub(&((*res)[2]), (*res)[2], t0);
+  fp2->sub(&((*res)[2]), (*res)[2], t2);
+  fp2->add(&((*res)[2]), (*res)[2], t1);
 }
 
 void Fp6::mul(Double *res, const Double &a, const ecl_digit b) {
@@ -101,17 +100,17 @@ void Fp6::sqr(Element *res, const Element &a) {
  */
 
 void Fp6::sqr(Double *res, const Element &a) {
-  Fp2::Double c0, c1, c2, c3, c4, c5;
+  Fp2::Double c3, c4, c5;
   Fp2::Element t;
 
   fp2->mul(&c4, a[0], a[1]);
   fp2->add(&c4, c4, c4);
 
   fp2->sqr(&c5, a[2]);
-  fp2->mul_xsi(&c1, c5);
-  fp2->add(&c1, c1, c4);
+  fp2->mul_xsi(&((*res)[1]), c5);
+  fp2->add(&((*res)[1]), (*res)[1], c4);
 
-  fp2->sub(&c2, c4, c5);
+  fp2->sub(&((*res)[2]), c4, c5);
   fp2->sqr(&c3, a[0]);
 
   fp2->sub(&t, a[0], a[1]);
@@ -122,14 +121,12 @@ void Fp6::sqr(Double *res, const Element &a) {
 
   fp2->sqr(&c4, t);
 
-  fp2->mul_xsi(&c0, c5);
-  fp2->add(&((*res)[0]), c0, c3);
+  fp2->mul_xsi(&((*res)[0]), c5);
+  fp2->add(&((*res)[0]), (*res)[0], c3);
 
-  fp2->add(&c2, c2, c4);
-  fp2->add(&c2, c2, c5);
-  fp2->sub(&((*res)[2]), c2, c3);
-
-  fp2->copy(&((*res)[1]), c1);
+  fp2->add(&((*res)[2]), (*res)[2], c4);
+  fp2->add(&((*res)[2]), (*res)[2], c5);
+  fp2->sub(&((*res)[2]), (*res)[2], c3);
 }
 
 /*

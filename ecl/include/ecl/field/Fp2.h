@@ -340,7 +340,6 @@ class Fp2 {
    */
   void rand(Element *res, int (*f_rng)(unsigned char *, int, void *),
             void *p_rng);
-
  private:
   GFp *gfp;  //<! base field
   ecl_digit gfp_qnr_;  //<! opposite of a quadratic non residue in gfp \f$ Fp2 = GFp[X] / ( X^2 + gfp_qnr_ ) \f$
@@ -353,6 +352,8 @@ class Fp2 {
   /** Calculates xsi_
    */
   void init_xsi();
+
+
 };
 
 }  // namespace field

@@ -28,21 +28,21 @@ void Fp2::mul(Element (*res), const Element &a,
 }
 
 void Fp2::mul(Double (*res), const Element &a, const Element &b) {
-  GFp::Double t0, t1;
+  GFp::Double t1;
   GFp::Element t2, t3;
 
-  gfp->mul(&t0, a[0], b[0]);
+  gfp->mul(&((*res)[0]), a[0], b[0]);
   gfp->mul(&t1, a[1], b[1]);
 
   gfp->add(&t2, a[0], a[1]);
   gfp->add(&t3, b[0], b[1]);
 
   gfp->mul(&((*res)[1]), t2, t3);
-  gfp->sub(&((*res)[1]), (*res)[1], t0);
+  gfp->sub(&((*res)[1]), (*res)[1], (*res)[0] );
   gfp->sub(&((*res)[1]), (*res)[1], t1);
 
   gfp->mul(&t1, t1, gfp_qnr_);
-  gfp->sub(&((*res)[0]), t0, t1);
+  gfp->sub(&((*res)[0]), (*res)[0], t1);
 }
 
 void Fp2::mul(Double (*res), const Double &a, const ecl_digit b) {
@@ -51,12 +51,21 @@ void Fp2::mul(Double (*res), const Double &a, const ecl_digit b) {
 }
 
 void Fp2::sqr(Element (*res), const Element &a) {
-  Double d;
-  sqr(&d, a);
-  reduce(res, d);
+  if (gfp_qnr_ == 1) {  // less temporary elements
+    GFp::Element t0, t1, i0;
+    gfp->add(&t0, a[0], a[1]);
+    gfp->sub(&t1, a[0], a[1]);
+    gfp->mul(&i0, t0, t1);
+    gfp->mul(&((*res)[1]), a[0], a[1]);
+    gfp->add(&((*res)[1]), (*res)[1], (*res)[1]);
+    gfp->copy(&((*res)[0]), i0);
+  } else {
+    Double d;
+    sqr(&d, a);
+    reduce(res, d);
+  }
 }
 
-#if 1
 void Fp2::sqr(Double (*res), const Element &a) {
   if (gfp_qnr_ == 1) {  // one mul instead of 2 squares
     GFp::Element t0, t1;
@@ -72,26 +81,7 @@ void Fp2::sqr(Double (*res), const Element &a) {
   gfp->mul(&((*res)[1]), a[0], a[1]);
   gfp->add(&((*res)[1]), (*res)[1], (*res)[1]);
 }
-#else
-//1. t ← addNC(a1, a1);
-//2. d1 ← mul256(t, a0);
-//3. t ← addNC(a0, p);
-//4. t ← subNC(t, a1);
-//5. c1 ← 5a1;
-//6. c1 ← addNC(c1, a0);
-//7. d0 ← mul256(t, c1);
-//8. c1 ← mod512(d1);
-//9. d1 ← addNC(d1, d1);
-//10. d0 ← subNC(d0, d1);
-//11. c0 ← mod512(d0);
-//12. return C ← c0 +c1u;
-void Fp2::sqr(Double (*res), const Element &a) {
-  GFp::Element t, c0, c1;
-  gfp->add_nr(&t, a[1], a[1]) ;
-  gfp->mul(&((*res)[1]), t, a[0]) ;
 
-}
-#endif
 /*
  Require: A = a0 + a1u in Fp2 .
  Ensure: res = C = c0 + c1u = A^-1 in Fp2 .

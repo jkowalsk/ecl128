@@ -36,19 +36,19 @@ void Fp12::mul(Element *res, const Element &a, const ecl_digit b) {
 
 void Fp12::mul(Double *res, const Element &a, const Element &b) {
   Fp6::Element s0, s1;
-  Fp6::Double t0, t1;
+  Fp6::Double t1;
 
-  fp6->mul(&t0, a[0], b[0]);
+  fp6->mul(&((*res)[0]), a[0], b[0]);
   fp6->mul(&t1, a[1], b[1]);
 
   fp6->add(&s0, a[0], a[1]);
   fp6->add(&s1, b[0], b[1]);
   fp6->mul(&((*res)[1]), s1, s0);
-  fp6->sub(&((*res)[1]), (*res)[1], t0);
+  fp6->sub(&((*res)[1]), (*res)[1], (*res)[0]);
   fp6->sub(&((*res)[1]), (*res)[1], t1);
 
   fp6->mul_vi(&t1, t1);
-  fp6->add(&((*res)[0]), t0, t1);
+  fp6->add(&((*res)[0]), (*res)[0], t1);
 }
 
 void Fp12::mul(Double *res, const Double &a, const ecl_digit b) {
@@ -69,7 +69,7 @@ void Fp12::mul(Double *res, const Double &a, const ecl_digit b) {
  8. c1 =  2c1 ;
  9. return C = c0 + c1w;
  */
-
+// uses less temp element :
 void Fp12::sqr(Element *res, const Element &a) {
   Fp6::Element t0, t1;
 
@@ -86,14 +86,14 @@ void Fp12::sqr(Element *res, const Element &a) {
 
 void Fp12::sqr(Double *res, const Element &a) {
   Fp6::Element t0, t1;
-  Fp6::Double d0, d1;
+  Fp6::Double d1;
 
   fp6->add(&t0, a[0], a[1]);
   fp6->mul_vi(&t1, a[1]);
   fp6->add(&t1, a[0], t1);
-  fp6->mul(&d0, t0, t1);
+  fp6->mul(&((*res)[0]), t0, t1);
   fp6->mul(&((*res)[1]), a[0], a[1]);
-  fp6->sub(&((*res)[0]), d0, (*res)[1]);
+  fp6->sub(&((*res)[0]), (*res)[0], (*res)[1]);
   fp6->mul_vi(&d1, (*res)[1]);
   fp6->sub(&((*res)[0]), (*res)[0], d1);
   fp6->add(&((*res)[1]), (*res)[1], (*res)[1]);

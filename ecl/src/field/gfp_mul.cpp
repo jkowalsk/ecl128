@@ -16,56 +16,111 @@ namespace field {
 #ifdef DIGIT_64
 void GFp::mul(Double *res, const Element &a, const Element &b) {
   register ecl_digit c0, c1, c2;
+  const ecl_digit *aa, *bb;
+  ecl_digit *rr;
+
+  aa = a.val;
+  bb = b.val;
+  rr = res->val;
 
   COMBA_START;
   COMBA_CLEAR
   ;
 
   /* 0 */
-  MULADD_ALLREG(a.val[0], b.val[0]);
-  COMBA_STORE(res->val[0]);
+  MULADD_ALLREG(aa[0], bb[0]);
+  COMBA_STORE(rr[0]);
   /* 1 */
   COMBA_FORWARD
   ;
-  MULADD_ALLREG(a.val[0], b.val[1]);
-  MULADD_ALLREG(a.val[1], b.val[0]);
-  COMBA_STORE(res->val[1]);
+  MULADD_ALLREG(aa[0], bb[1]);
+  MULADD_ALLREG(aa[1], bb[0]);
+  COMBA_STORE(rr[1]);
   /* 2 */
   COMBA_FORWARD
   ;
-  MULADD_ALLREG(a.val[0], b.val[2]);
-  MULADD_ALLREG(a.val[1], b.val[1]);
-  MULADD_ALLREG(a.val[2], b.val[0]);
-  COMBA_STORE(res->val[2]);
+  MULADD_ALLREG(aa[0], bb[2]);
+  MULADD_ALLREG(aa[1], bb[1]);
+  MULADD_ALLREG(aa[2], bb[0]);
+  COMBA_STORE(rr[2]);
   /* 3 */
   COMBA_FORWARD
   ;
-  MULADD_ALLREG(a.val[0], b.val[3]);
-  MULADD_ALLREG(a.val[1], b.val[2]);
-  MULADD_ALLREG(a.val[2], b.val[1]);
-  MULADD_ALLREG(a.val[3], b.val[0]);
-  COMBA_STORE(res->val[3]);
+  MULADD_ALLREG(aa[0], bb[3]);
+  MULADD_ALLREG(aa[1], bb[2]);
+  MULADD_ALLREG(aa[2], bb[1]);
+  MULADD_ALLREG(aa[3], bb[0]);
+  COMBA_STORE(rr[3]);
   /* 4 */
   COMBA_FORWARD
   ;
-  MULADD_ALLREG(a.val[1], b.val[3]);
-  MULADD_ALLREG(a.val[2], b.val[2]);
-  MULADD_ALLREG(a.val[3], b.val[1]);
-  COMBA_STORE(res->val[4]);
+  MULADD_ALLREG(aa[1], bb[3]);
+  MULADD_ALLREG(aa[2], bb[2]);
+  MULADD_ALLREG(aa[3], bb[1]);
+  COMBA_STORE(rr[4]);
   /* 5 */
   COMBA_FORWARD
   ;
-  MULADD_ALLREG(a.val[2], b.val[3]);
-  MULADD_ALLREG(a.val[3], b.val[2]);
-  COMBA_STORE(res->val[5]);
+  MULADD_ALLREG(aa[2], bb[3]);
+  MULADD_ALLREG(aa[3], bb[2]);
+  COMBA_STORE(rr[5]);
   /* 6 */
   COMBA_FORWARD
   ;
-  MULADD_ALLREG(a.val[3], b.val[3]);
-  COMBA_STORE(res->val[6]);
+  MULADD_ALLREG(aa[3], bb[3]);
+  COMBA_STORE(rr[6]);
 
-  COMBA_STORE2(res->val[7]);COMBA_FINI;
+  COMBA_STORE2(rr[7]);COMBA_FINI;
 }
+
+void GFp::sqr(Double *res, const Element &a) {
+  register ecl_digit c0, c1, c2;
+  const ecl_digit *aa;
+  ecl_digit *rr;
+
+  aa = a.val;
+  rr = res->val;
+
+  /* clear carries */
+  COMBA_CLEAR;
+
+  /* output 0 */
+  SQRADD(aa[0]);
+  COMBA_STORE(rr[0]);
+
+  /* output 1 */
+  COMBA_FORWARD;
+  SQRADD2(aa[0], aa[1]);
+  COMBA_STORE(rr[1]);
+
+  /* output 2 */
+  COMBA_FORWARD;
+  SQRADD2(aa[0], aa[2]); SQRADD(aa[1]);
+  COMBA_STORE(rr[2]);
+
+  /* output 3 */
+  COMBA_FORWARD;
+  SQRADD2(aa[0], aa[3]); SQRADD2(aa[1], aa[2]);
+  COMBA_STORE(rr[3]);
+
+  /* output 4 */
+  COMBA_FORWARD;
+  SQRADD2(aa[1], aa[3]); SQRADD(aa[2]);
+  COMBA_STORE(rr[4]);
+
+  /* output 5 */
+  COMBA_FORWARD;
+  SQRADD2(aa[2], aa[3]);
+  COMBA_STORE(rr[5]);
+
+  /* output 6 */
+  COMBA_FORWARD;
+  SQRADD(aa[3]);
+  COMBA_STORE(rr[6]);
+  COMBA_STORE2(rr[7]);
+  COMBA_FINI;
+}
+
 #else // DIGIT_32
 void GFp::mul(Double *res, const Element &a, const Element &b) {
   register ecl_digit c0, c1, c2;
@@ -192,6 +247,12 @@ void GFp::mul(Double *res, const Element &a, const Element &b) {
   COMBA_FINI;
   ZEROMEM(at, 16 * sizeof(ecl_digit));
 }
+
+void GFp::sqr(Double *res, const Element &a) {
+  mul(res, a, a);
+}
+
+
 #endif
 
 void GFp::mul(Element *res, const Element &a, const Element &b) {
@@ -273,9 +334,6 @@ void GFp::sqr(Element *res, const Element &a) {
   reduce(res, tmp);
 }
 
-void GFp::sqr(Double *res, const Element &a) {
-  mul(res, a, a);
-}
 
 }  // namespace field
 }  // namespace ecl
