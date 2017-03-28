@@ -11,7 +11,7 @@ if(CMAKE_COMPILER_IS_GNUCXX)
   message(STATUS "Using g++ as compiler")
   
   # common compilation flags
-  set(COMMON_CXX_FLAGS "-Wall -fmessage-length=0")
+  set(COMMON_CXX_FLAGS "-Wall -fmessage-length=0 -fno-exceptions")
   
   # debug specific flags
   set(CMAKE_CXX_FLAGS_DEBUG
@@ -38,6 +38,11 @@ if(CMAKE_COMPILER_IS_GNUCXX)
   set(CMAKE_CXX_FLAGS_RELEASE 
   "${CMAKE_CXX_FLAGS_RELEASE} -march=native"
   )
+  
+  SET(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS} -flto")
+  SET(CMAKE_AR  "gcc-ar")
+  SET(CMAKE_CXX_ARCHIVE_CREATE "<CMAKE_AR> qcs <TARGET> <LINK_FLAGS> <OBJECTS>")
+  SET(CMAKE_CXX_ARCHIVE_FINISH   true)
   
 endif(CMAKE_COMPILER_IS_GNUCXX)
 

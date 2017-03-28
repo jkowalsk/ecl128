@@ -17,10 +17,10 @@ namespace ecl {
  */
 template <class T> class sec_allocator : public std::allocator<T> {
  public:
-  //   template<class U> struct rebind { typedef sec_allocator<U> other; };
-  //   sec_allocator() throw() {}
-  //   sec_allocator(const sec_allocator &) throw() {}
-  //   template <class U> sec_allocator(const sec_allocator<U>&) throw() {}
+  template<class U> struct rebind { typedef sec_allocator<U> other; };
+  sec_allocator() throw() {}
+  sec_allocator(const sec_allocator &) throw() {}
+  template <class U> sec_allocator(const sec_allocator<U>&) throw() {}
 
   /** Zeroize memory on deallocation.
    * @param p pointer to memory

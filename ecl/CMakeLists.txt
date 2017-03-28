@@ -103,7 +103,7 @@ set(ALL_FILES
   ${PRIVATE_INCLUDE_FILES}
 )
 
-add_library(${LIBRARY_NAME} STATIC
+add_library(${LIBRARY_NAME} SHARED
   ${ALL_FILES}
 )
 
