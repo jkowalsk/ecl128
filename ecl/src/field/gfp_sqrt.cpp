@@ -114,7 +114,6 @@ ErrCode GFp::sqrt(Element *res, const Element &a) {
         expo.val[NB_LIMBS - 1] |= (carry << (DIGIT_BITS - 2));
         exp(res, a, expo);
         goto end;
-        goto end;
       } else {  // must be -1
         FixedSizedInt<NB_LIMBS>::sub(&expo, p_, 5);
         r_shift(&expo, expo, 3);

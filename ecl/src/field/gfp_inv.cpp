@@ -39,22 +39,22 @@ void GFp::inv(Element *res, const Element &a) {
   while (!v.isZero()) {
     /*  if u is even then u := u/2, s := 2s   */
     if ((u.val[0] & 1) == 0) {
-      r_shift(&u, u);
+      GFp::r_shift(&u, u);
       FixedSizedInt<NB_LIMBS>::add(&s, s, s);
     } else if ((v.val[0] & 1) == 0) {
       /* else if v is even then v := v/2, r := 2r */
-      r_shift(&v, v);
+      GFp::r_shift(&v, v);
       carry = FixedSizedInt<NB_LIMBS>::add(&r, r, r);
     } else if (this->cmp(u, v) == -1) {
       /* else if u > v then u := (u − v)/2, r := r + s, s := 2s */
       FixedSizedInt<NB_LIMBS>::sub(&u, u, v);
-      r_shift(&u, u);
+      GFp::r_shift(&u, u);
       carry = FixedSizedInt<NB_LIMBS>::add(&r, r, s);
       FixedSizedInt<NB_LIMBS>::add(&s, s, s);
     } else {
       /* else (if v ≥ u then) v := (v − u)/2, s := s + r, r := 2r */
       FixedSizedInt<NB_LIMBS>::sub(&v, v, u);
-      r_shift(&v, v);
+      GFp::r_shift(&v, v);
       FixedSizedInt<NB_LIMBS>::add(&s, r, s);
       carry = FixedSizedInt<NB_LIMBS>::add(&r, r, r);
     }
@@ -89,7 +89,7 @@ void GFp::inv(Element *res, const Element &a) {
 
 void GFp::div(Element *res, const Element &a, const Element &b) {
   Element tmp;
-  inv(&tmp, b);
+  GFp::inv(&tmp, b);
   mul(res, tmp, a);
 }
 

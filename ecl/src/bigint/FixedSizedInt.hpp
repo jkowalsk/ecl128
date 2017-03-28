@@ -307,12 +307,12 @@ void FixedSizedInt<nb_limbs>::mul(FixedSizedInt<nb_limbs> *res,
                                   const FixedSizedInt<nb_limbs> &b) {
   register ecl_digit c0, c1, c2;
   register int i, j;
-  register const ecl_digit *aa, *bb;
 
   COMBA_START;
   COMBA_CLEAR;
 
   for (i = 0; i < nb_limbs; i++) {
+	register const ecl_digit *aa, *bb;
     aa = a.val;
     bb = b.val + i;
     COMBA_FORWARD;

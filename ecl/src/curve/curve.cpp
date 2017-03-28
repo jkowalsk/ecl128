@@ -308,7 +308,7 @@ void FpnCurve<BaseField>::dbl(Point *res, const Point &P) {
 template<class BaseField>
 void FpnCurve<BaseField>::mul_ML(Point *res, const Point &P,
                                  const typename GFp::Element &k) {
-  int i, l, y;
+  int i, l;
   Point pp[2];
 
   init(&(pp[0]));
@@ -320,7 +320,7 @@ void FpnCurve<BaseField>::mul_ML(Point *res, const Point &P,
   l = k.count_bits();
 
   for (i = l - 1; i > 0; i--) {
-    y = k.get_bit(i - 1);
+	int y = k.get_bit(i - 1);
     add(&(pp[y ^ 1]), pp[0], pp[1]);
     dbl(&(pp[y]), pp[y]);
   }
@@ -335,7 +335,7 @@ template<class BaseField>
 ErrCode FpnCurve<BaseField>::mul_SW(Point *res, const Point &P,
                                     const typename GFp::Element &k,
                                     int window_sz) {
-  Point *precomp = NULL;
+  Point *precomp;
   Point pp;
   Point &Q = *res;
   int i, u, s, precomp_sz;

@@ -112,7 +112,7 @@ void BnCurve<Basefield>::set_trace() {
 
 ErrCode GFpBnCurve::initialize(string t, string b) {
   GFp::Element tmp;
-  ErrCode rv = ERR_OK;
+  ErrCode rv;
 
   rv = this->t_.fromString(&this->t_sign_, t);
   if (rv != ERR_OK)
@@ -141,7 +141,7 @@ ErrCode GFpBnCurve::initialize(string t, string b) {
 ErrCode Fp2BnCurve::initialize(string t, string b) {
   GFp::Element tmp, b_gfp, zero_e;
   Fp2::Element xsi;
-  ErrCode rv = ERR_OK;
+  ErrCode rv;
 
   rv = this->t_.fromString(&this->t_sign_, t);
   if (rv != ERR_OK)
