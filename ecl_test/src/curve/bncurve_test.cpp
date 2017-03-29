@@ -46,7 +46,6 @@ class BnEccBase : public testing::Test {
   }
 
   BnCurveDefinition def;
-  int def_size;
   GFpBnCurve gfp_curve;
   GFpBnCurve::Point gfp_gen;
   GFpBnCurve::Point P, ref, res, dP, tP;

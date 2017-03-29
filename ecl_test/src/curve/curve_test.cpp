@@ -74,7 +74,6 @@ class EccGFpBase : public testing::Test {
   // import number in base 10...
   void dirtyimport(typename GFp::Element *res,
                    const char *str) {
-    const char *offset = 0;
     ecl_digit d;
     gfp->zero(res);
     get_digit(&d, str[0]);
