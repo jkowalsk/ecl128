@@ -40,7 +40,6 @@ class BnPairingBase : public testing::Test {
   }
 
   BnCurveDefinition def;
-  int def_size;
   BNPairing ate;
   GFpBnCurve *gfp_curve;
   GFpBnCurve::Point P, PP, P2;

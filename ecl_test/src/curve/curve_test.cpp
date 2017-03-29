@@ -52,7 +52,7 @@ class EccGFpBase : public testing::Test {
 
   }
 
-  int getNbTest(int size) {
+  int getNbTest() {
     switch (def) {
       case NIST_P256:
         return sizeof(p256_vectors) / sizeof(ec_test_vector);
@@ -86,7 +86,6 @@ class EccGFpBase : public testing::Test {
   }
 
   CurveDefinition def;
-  int def_size;
   GFpCurve curve;
   typename GFpCurve::Point P, ref, res, dP, tP;
   GFp *gfp;
@@ -166,7 +165,7 @@ ASSERT_EQ(0, this->curve.cmp(this->ref, this->tP) );
 /** Test point multiplication (Sliding window of size 4)
  */
 TYPED_TEST_P( EccGFp, Mul ){
-int vector_size = this->getNbTest(this->def_size);
+int vector_size = this->getNbTest();
 ASSERT_TRUE( this->curve.isValid(this->P, CHECK_ORDER) );
 ASSERT_TRUE( this->gfp != NULL );
 
@@ -192,7 +191,7 @@ for(int j=0; j<vector_size; j++) {
 
 /** Test point compression and decompression */
 TYPED_TEST_P(EccGFp, Compression){
-int vector_size = this->getNbTest(this->def_size);
+int vector_size = this->getNbTest();
 int comp_y;
 
 ASSERT_TRUE( this->curve.isValid(this->P, CHECK_ORDER) );
@@ -226,7 +225,7 @@ for(int j=0; j<vector_size; j++) {
 /** Test point multiplication (Montgommery ladder)
  */
 TYPED_TEST_P(EccGFp, Ladder){
-int vector_size = this->getNbTest(this->def_size);
+int vector_size = this->getNbTest();
 
 ASSERT_TRUE( this->curve.isValid(this->P, CHECK_ORDER) );
 ASSERT_TRUE( this->gfp != NULL );
@@ -253,7 +252,7 @@ for(int j=0; j<vector_size; j++) {
 
 TYPED_TEST_P(EccGFp, Performance){
 uint64_t overhead;
-int vector_size = this->getNbTest(this->def_size);
+int vector_size = this->getNbTest();
 
 this->dirtyimport(&this->k, this->vectors[vector_size-1].k);
 

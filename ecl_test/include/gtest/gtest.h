@@ -17055,6 +17055,7 @@ INSTANTIATE_TYPED_TEST_CASE_P(My, FooTest, MyTypes);
   namespace GTEST_CASE_NAMESPACE_(CaseName) { \
   template <typename gtest_TypeParam_> \
   class TestName : public CaseName<gtest_TypeParam_> { \
+	  ~TestName(){} \
    private: \
     typedef CaseName<gtest_TypeParam_> TestFixture; \
     typedef gtest_TypeParam_ TypeParam; \
