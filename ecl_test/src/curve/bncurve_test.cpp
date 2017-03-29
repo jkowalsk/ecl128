@@ -186,11 +186,11 @@ REGISTER_TYPED_TEST_CASE_P(BnEcc,// The first argument is the test case name.
     // The rest of the arguments are the test names.
     DoubleAddGFp, DoubleAddFp2, Compression, PerformanceGFp, PerformanceFp2);
 
-/** Perform generic tests for NIST_P256 curve */
+/** Perform generic tests for NAERING_256 curve */
 INSTANTIATE_TYPED_TEST_CASE_P(NAERING_256, BnEcc, CurveWithDef<BN_NAERING_256>);
-/** Perform generic tests for NIST_P256 curve */
+/** Perform generic tests for BN_ARANHA_254 curve */
 INSTANTIATE_TYPED_TEST_CASE_P(BN_ARANHA_254, BnEcc, CurveWithDef<BN_ARANHA_254>);
-/** Perform generic tests for NIST_P256 curve */
+/** Perform generic tests for BN_BEUCHAT_254 curve */
 INSTANTIATE_TYPED_TEST_CASE_P(BN_BEUCHAT_254, BnEcc, CurveWithDef<BN_BEUCHAT_254>);
 /**@}*/
 

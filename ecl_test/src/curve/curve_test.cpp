@@ -26,71 +26,79 @@ using namespace ecl::curve;
 
 template<CurveDefinition definition>
 class CurveWithDef {
- public:
-  static CurveDefinition getDefinition() {
-    return definition;
-  }
+public:
+	static CurveDefinition getDefinition() {
+		return definition;
+	}
 };
+
+static void get_digit(ecl_digit *d, char c) {
+	*d = 255;
+	if (c >= 0x30 && c <= 0x39)
+		*d = c - 0x30;
+	if (c >= 0x41 && c <= 0x46)
+		*d = c - 0x37;
+	if (c >= 0x61 && c <= 0x66)
+		*d = c - 0x57;
+}
+
+// import number in base 10...
+static void dirtyimport(typename GFp::Element *res, GFp &field,
+		const char *str ) {
+	ecl_digit d;
+	GFp::Element result;
+	field.zero(&result);
+	get_digit(&d, str[0]);
+	field.add_nr(&result, result, d);
+	for (size_t i = 1; i < strlen(str); i++) {
+		get_digit(&d, str[i]);
+		field.mul(&result, result, 10);
+		field.add_nr(&result, result, d);
+	}
+
+	field.copy(res, result);
+}
 
 template<class CurveDef>
 class EccGFpBase : public testing::Test {
- public:
-  EccGFpBase() {
-    def = CurveDef::getDefinition();
-    CurveFactory::getParameters(&curve, &P, def);
-    gfp = curve.getField();
-    switch (def) {
-      case NIST_P256:
-        vectors = p256_vectors;
-        break;
-      default:
-        break;
-    }
-  }
+public:
+	EccGFpBase() {
+		def = CurveDef::getDefinition();
+		CurveFactory::getParameters(&curve, &P, def);
+		gfp = curve.getField();
+		switch (def) {
+		case NIST_P256:
+			vectors = p256_vectors;
+			break;
+		case ANSSI_FRP256v1:
+			vectors = frp256v1_vectors;
+			break;
+		default:
+			break;
+		}
+	}
 
-  ~EccGFpBase() {
+	~EccGFpBase() {
 
-  }
+	}
 
-  int getNbTest() {
-    switch (def) {
-      case NIST_P256:
-        return sizeof(p256_vectors) / sizeof(ec_test_vector);
-      default:
-        return 0;
-    }
-  }
+	int getNbTest() {
+		switch (def) {
+		case NIST_P256:
+			return sizeof(p256_vectors) / sizeof(ec_test_vector);
+		case ANSSI_FRP256v1:
+			return sizeof(frp256v1_vectors) / sizeof(ec_test_vector);
+		default:
+			return 0;
+		}
+	}
 
-  void get_digit(ecl_digit *d, char c) {
-    *d = 255;
-    if (c >= 0x30 && c <= 0x39)
-      *d = c - 0x30;
-    if (c >= 0x41 && c <= 0x46)
-      *d = c - 0x37;
-    if (c >= 0x61 && c <= 0x66)
-      *d = c - 0x57;
-  }
-
-  // import number in base 10...
-  void dirtyimport(typename GFp::Element *res,
-                   const char *str) {
-    ecl_digit d;
-    gfp->zero(res);
-    get_digit(&d, str[0]);
-    gfp->add_nr(res, *res, d);
-    for (size_t i = 1; i < strlen(str); i++) {
-      get_digit(&d, str[i]);
-      gfp->mul(res, *res, 10);
-      gfp->add_nr(res, *res, d);
-    }
-  }
-
-  CurveDefinition def;
-  GFpCurve curve;
-  typename GFpCurve::Point P, ref, res, dP, tP;
-  GFp *gfp;
-  typename GFp::Element x, y, k, comp;
-  ec_test_vector *vectors;
+	CurveDefinition def;
+	GFpCurve curve;
+	typename GFpCurve::Point P, ref, res, dP, tP;
+	GFp *gfp;
+	typename GFp::Element x, y, k, comp;
+	ec_test_vector *vectors;
 };
 
 // First, define a test fixture class template.  Here we just reuse
@@ -111,26 +119,26 @@ TYPED_TEST_CASE_P(EccGFp);
  This test performs the following operations:
  */
 TYPED_TEST_P( EccGFp, Double){
-ASSERT_TRUE( this->curve.isValid(this->P, CHECK_ORDER) );
-ASSERT_TRUE( this->gfp != NULL );
+	ASSERT_TRUE( this->curve.isValid(this->P, CHECK_ORDER) );
+	ASSERT_TRUE( this->gfp != NULL );
 
-this->curve.init(&this->dP);
-this->curve.init(&this->ref);
+	this->curve.init(&this->dP);
+	this->curve.init(&this->ref);
 
-/**  <li> double the point */
-this->curve.dbl(&this->dP, this->P);
+	/**  <li> double the point */
+	this->curve.dbl(&this->dP, this->P);
 
-/** <li>  get the value of [2]P from test vectors */
-ASSERT_EQ(ERR_OK, this->gfp->fromString(&this->x, this->vectors[1].x) );
-ASSERT_EQ(ERR_OK, this->gfp->fromString(&this->y, this->vectors[1].y) );
-this->curve.init(&this->ref, this->x, this->y );
+	/** <li>  get the value of [2]P from test vectors */
+	ASSERT_EQ(ERR_OK, this->gfp->fromString(&this->x, this->vectors[1].x) );
+	ASSERT_EQ(ERR_OK, this->gfp->fromString(&this->y, this->vectors[1].y) );
+	this->curve.init(&this->ref, this->x, this->y );
 
-/** <li> verify that the result is on the curve */
-ASSERT_TRUE( this->curve.isValid(this->dP, CHECK_ORDER) );
+	/** <li> verify that the result is on the curve */
+	ASSERT_TRUE( this->curve.isValid(this->dP, CHECK_ORDER) );
 
-/** <li>  verify that the calculated doubled point and the test vector are equal */
-ASSERT_EQ(0, this->curve.cmp(this->ref, this->dP) );
-/** </ul> */
+	/** <li>  verify that the calculated doubled point and the test vector are equal */
+	ASSERT_EQ(0, this->curve.cmp(this->ref, this->dP) );
+	/** </ul> */
 }
 
 /** Test point addition.
@@ -138,141 +146,153 @@ ASSERT_EQ(0, this->curve.cmp(this->ref, this->dP) );
  */
 TYPED_TEST_P( EccGFp, Add){
 
-ASSERT_TRUE( this->curve.isValid(this->P, CHECK_ORDER) );
-ASSERT_TRUE( this->gfp != NULL );
+	ASSERT_TRUE( this->curve.isValid(this->P, CHECK_ORDER) );
+	ASSERT_TRUE( this->gfp != NULL );
 
-this->curve.init(&this->dP);
-this->curve.init(&this->tP);
-this->curve.init(&this->ref);
+	this->curve.init(&this->dP);
+	this->curve.init(&this->tP);
+	this->curve.init(&this->ref);
 
-/**  <li> double the point then add the point to the result (i.e. triple P)*/
-this->curve.dbl(&this->dP, this->P);
-this->curve.add(&this->tP, this->dP, this->P);
+	/**  <li> double the point then add the point to the result (i.e. triple P)*/
+	this->curve.dbl(&this->dP, this->P);
+	this->curve.add(&this->tP, this->dP, this->P);
 
-/** <li>  get the value of [3]P from test vectors */
-ASSERT_EQ(ERR_OK, this->gfp->fromString(&this->x, this->vectors[2].x) );
-ASSERT_EQ(ERR_OK, this->gfp->fromString(&this->y, this->vectors[2].y) );
-this->curve.init(&this->ref, this->x, this->y );
+	/** <li>  get the value of [3]P from test vectors */
+	ASSERT_EQ(ERR_OK, this->gfp->fromString(&this->x, this->vectors[2].x) );
+	ASSERT_EQ(ERR_OK, this->gfp->fromString(&this->y, this->vectors[2].y) );
+	this->curve.init(&this->ref, this->x, this->y );
 
-/** <li> verify that the result is on the curve */
-ASSERT_TRUE( this->curve.isValid(this->tP, CHECK_ORDER) );
+	/** <li> verify that the result is on the curve */
+	ASSERT_TRUE( this->curve.isValid(this->tP, CHECK_ORDER) );
 
-/** <li>  verify that the calculated tripled point and the test vector are equal */
-ASSERT_EQ(0, this->curve.cmp(this->ref, this->tP) );
-/** </ul> */
+	/** <li>  verify that the calculated tripled point and the test vector are equal */
+	ASSERT_EQ(0, this->curve.cmp(this->ref, this->tP) );
+	/** </ul> */
 }
 
 /** Test point multiplication (Sliding window of size 4)
  */
 TYPED_TEST_P( EccGFp, Mul ){
-int vector_size = this->getNbTest();
-ASSERT_TRUE( this->curve.isValid(this->P, CHECK_ORDER) );
-ASSERT_TRUE( this->gfp != NULL );
+	GFp::Element order;
+	this->curve.get_order(&order);
+	GFp field(order);
 
-this->curve.init(&this->res);
-this->curve.init(&this->ref);
+	int vector_size = this->getNbTest();
+	ASSERT_TRUE( this->curve.isValid(this->P, CHECK_ORDER) );
+	ASSERT_TRUE( this->gfp != NULL );
 
-for(int j=0; j<vector_size; j++) {
-  this->dirtyimport(&this->k, this->vectors[j].k);
+	this->curve.init(&this->res);
+	this->curve.init(&this->ref);
 
-  /** <li>  get the value of [k]P from test vectors */
-  ASSERT_EQ(ERR_OK, this->gfp->fromString(&this->x, this->vectors[j].x) );
-  ASSERT_EQ(ERR_OK, this->gfp->fromString(&this->y, this->vectors[j].y) );
-  this->curve.init(&this->ref, this->x, this->y );
+	for(int j=0; j<vector_size; j++) {
+		dirtyimport(&this->k, field, this->vectors[j].k);
 
-  /**  <li> calculate [k]P */
-  ASSERT_EQ(ERR_OK, this->curve.mul(&this->res, this->P, this->k) );
+		/** <li>  get the value of [k]P from test vectors */
+		ASSERT_EQ(ERR_OK, this->gfp->fromString(&this->x, this->vectors[j].x) );
+		ASSERT_EQ(ERR_OK, this->gfp->fromString(&this->y, this->vectors[j].y) );
+		this->curve.init(&this->ref, this->x, this->y );
 
-  /** <li>  verify that the calculated point and the test vector are equal */
-  ASSERT_EQ(0, this->curve.cmp(this->ref, this->res) );
-}
-/** </ul> */
+		/**  <li> calculate [k]P */
+		ASSERT_EQ(ERR_OK, this->curve.mul(&this->res, this->P, this->k) );
+
+		/** <li>  verify that the calculated point and the test vector are equal */
+		ASSERT_EQ(0, this->curve.cmp(this->ref, this->res) );
+	}
+	/** </ul> */
 }
 
 /** Test point compression and decompression */
 TYPED_TEST_P(EccGFp, Compression){
-int vector_size = this->getNbTest();
-int comp_y;
+	int vector_size = this->getNbTest();
+	int comp_y;
 
-ASSERT_TRUE( this->curve.isValid(this->P, CHECK_ORDER) );
-ASSERT_TRUE( this->gfp != NULL );
+	ASSERT_TRUE( this->curve.isValid(this->P, CHECK_ORDER) );
+	ASSERT_TRUE( this->gfp != NULL );
 
-this->curve.init(&this->res);
-this->curve.init(&this->ref);
+	this->curve.init(&this->res);
+	this->curve.init(&this->ref);
 
-for(int j=0; j<vector_size; j++) {
-  this->dirtyimport(&this->k, this->vectors[j].k);
+	for(int j=0; j<vector_size; j++) {
+		/** <li>  get the value of [k]P from test vectors */
+		ASSERT_EQ(ERR_OK, this->gfp->fromString(&this->x, this->vectors[j].x) );
+		ASSERT_EQ(ERR_OK, this->gfp->fromString(&this->y, this->vectors[j].y) );
+		this->curve.init(&this->ref, this->x, this->y );
 
-  /** <li>  get the value of [k]P from test vectors */
-  ASSERT_EQ(ERR_OK, this->gfp->fromString(&this->x, this->vectors[j].x) );
-  ASSERT_EQ(ERR_OK, this->gfp->fromString(&this->y, this->vectors[j].y) );
-  this->curve.init(&this->ref, this->x, this->y );
+		ASSERT_TRUE( this->curve.isValid(this->ref, CHECK_ORDER) );
 
-  ASSERT_TRUE( this->curve.isValid(this->ref, CHECK_ORDER) );
+		/**  <li> Compress [k]P */
+		this->curve.compress(&this->comp, &comp_y, this->ref);
 
-  /**  <li> Compress [k]P */
-  this->curve.compress(&this->comp, &comp_y, this->ref);
+		/** <li>  Restore  [k]P */
+		ASSERT_EQ(ERR_OK, this->curve.decompress(&this->res, this->comp, comp_y));
 
-  /** <li>  Restore  [k]P */
-  ASSERT_EQ(ERR_OK, this->curve.decompress(&this->res, this->comp, comp_y));
-
-  /** <li>  Verify that the uncompressed point and original point are equal */
-  ASSERT_EQ(0, this->curve.cmp(this->ref, this->res) );
-}
-/** </ul> */
+		/** <li>  Verify that the uncompressed point and original point are equal */
+		ASSERT_EQ(0, this->curve.cmp(this->ref, this->res) );
+	}
+	/** </ul> */
 }
 
 /** Test point multiplication (Montgommery ladder)
  */
 TYPED_TEST_P(EccGFp, Ladder){
-int vector_size = this->getNbTest();
+	GFp::Element order;
+	this->curve.get_order(&order);
+	GFp field(order);
 
-ASSERT_TRUE( this->curve.isValid(this->P, CHECK_ORDER) );
-ASSERT_TRUE( this->gfp != NULL );
+	int vector_size = this->getNbTest();
 
-this->curve.init(&this->res);
-this->curve.init(&this->ref);
+	ASSERT_TRUE( this->curve.isValid(this->P, CHECK_ORDER) );
+	ASSERT_TRUE( this->gfp != NULL );
 
-for(int j=0; j<vector_size; j++) {
-  this->dirtyimport(&this->k, this->vectors[j].k);
+	this->curve.init(&this->res);
+	this->curve.init(&this->ref);
 
-  /** <li>  get the value of [k]P from test vectors */
-  ASSERT_EQ(ERR_OK, this->gfp->fromString(&this->x, this->vectors[j].x) );
-  ASSERT_EQ(ERR_OK, this->gfp->fromString(&this->y, this->vectors[j].y) );
-  this->curve.init(&this->ref, this->x, this->y );
+	for(int j=0; j<vector_size; j++) {
+		dirtyimport(&this->k, field, this->vectors[j].k);
 
-  /**  <li> calculate [k]P */
-  this->curve.mul_ML(&this->res, this->P, this->k);
+		/** <li>  get the value of [k]P from test vectors */
+		ASSERT_EQ(ERR_OK, this->gfp->fromString(&this->x, this->vectors[j].x) );
+		ASSERT_EQ(ERR_OK, this->gfp->fromString(&this->y, this->vectors[j].y) );
+		this->curve.init(&this->ref, this->x, this->y );
 
-  /** <li>  verify that the calculated point and the test vector are equal */
-  ASSERT_EQ(0, this->curve.cmp(this->ref, this->res) );
-}
-/** </ul> */
+		/**  <li> calculate [k]P */
+		this->curve.mul_ML(&this->res, this->P, this->k);
+
+		/** <li>  verify that the calculated point and the test vector are equal */
+		ASSERT_EQ(0, this->curve.cmp(this->ref, this->res) );
+	}
+	/** </ul> */
 }
 
 TYPED_TEST_P(EccGFp, Performance){
-uint64_t overhead;
-int vector_size = this->getNbTest();
+	GFp::Element order;
+	this->curve.get_order(&order);
+	GFp field(order);
 
-this->dirtyimport(&this->k, this->vectors[vector_size-1].k);
+	uint64_t overhead;
+	int vector_size = this->getNbTest();
 
-GET_OVERHEAD(overhead);
-GET_PERF_CLOCKS("        double", this->curve.dbl(&this->dP, this->P), overhead);
-GET_PERF_CLOCKS("      addition", this->curve.add(&this->tP, this->dP, this->P), overhead);
-GET_PERF_CLOCKS("multiplication", this->curve.mul(&this->res, this->P, this->k), overhead);
+	dirtyimport(&this->k, field, this->vectors[vector_size-1].k);
 
-GET_PERF("        double", this->curve.dbl(&this->dP, this->P));
-GET_PERF("      addition", this->curve.add(&this->tP, this->dP, this->P));
-GET_PERF("multiplication", this->curve.mul(&this->res, this->P, this->k));
+	GET_OVERHEAD(overhead);
+	GET_PERF_CLOCKS("        double", this->curve.dbl(&this->dP, this->P), overhead);
+	GET_PERF_CLOCKS("      addition", this->curve.add(&this->tP, this->dP, this->P), overhead);
+	GET_PERF_CLOCKS("multiplication", this->curve.mul(&this->res, this->P, this->k), overhead);
+
+	GET_PERF("        double", this->curve.dbl(&this->dP, this->P));
+	GET_PERF("      addition", this->curve.add(&this->tP, this->dP, this->P));
+	GET_PERF("multiplication", this->curve.mul(&this->res, this->P, this->k));
 }
 
 // Type-parameterized tests involve one extra step: you have to
 // enumerate the tests you defined:
 REGISTER_TYPED_TEST_CASE_P(EccGFp,// The first argument is the test case name.
-    // The rest of the arguments are the test names.
-    Double, Add, Mul, Compression, Ladder, Performance);
+		// The rest of the arguments are the test names.
+		Double, Add, Mul, Compression, Ladder, Performance);
 
 /** Perform generic tests for NIST_P256 curve */
 INSTANTIATE_TYPED_TEST_CASE_P(NIST_P256, EccGFp, CurveWithDef<NIST_P256>);
+/** Perform generic tests for ANSSI_FRP256v1 curve */
+INSTANTIATE_TYPED_TEST_CASE_P(ANSSI_FRP256v1, EccGFp, CurveWithDef<ANSSI_FRP256v1>);
 /**@}*/
 
